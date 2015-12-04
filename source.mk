@@ -29,10 +29,11 @@ CSRC += \
 	./fw/lib/nanopb/pb_decode.c \
 	./fw/lib/nanopb/pb_encode.c \
 	./fw/lib/minmea/minmea.c \
-	./fw/peripherals/comm.c \
-	./fw/core/cli.c \
 	./fw/core/cron.c \
 	./fw/core/interrupts.c \
 	./fw/core/log.c \
 	./fw/core/system.c \
-	./MSP_EXP432P401RLP.c
+
+	# ./fw/core/cli.c \
+#	./MSP_EXP432P401RLP.c \
+#	./fw/peripherals/comm.c \
