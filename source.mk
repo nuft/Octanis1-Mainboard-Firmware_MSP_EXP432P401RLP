@@ -2,6 +2,7 @@ CSRC += \
 	./fw/tests/minunit.c \
 	./fw/protobuf/rover_status.pb.c \
 	./fw/protobuf/simple.pb.c \
+	./fw/peripherals/comm.c \
 	./fw/peripherals/gps.c \
 	./fw/peripherals/imu.c \
 	./fw/peripherals/navigation.c \
@@ -23,17 +24,15 @@ CSRC += \
 	./fw/peripherals/hal/ublox_6.c \
 	./fw/peripherals/hal/ultrasonic.c \
 	./fw/peripherals/hal/windsensor.c \
-	./fw/main.c \
 	./fw/lib/printf.c \
 	./fw/lib/nanopb/pb_common.c \
 	./fw/lib/nanopb/pb_decode.c \
 	./fw/lib/nanopb/pb_encode.c \
 	./fw/lib/minmea/minmea.c \
+	./fw/core/cli.c \
 	./fw/core/cron.c \
 	./fw/core/interrupts.c \
 	./fw/core/log.c \
 	./fw/core/system.c \
-
-	# ./fw/core/cli.c \
-#	./MSP_EXP432P401RLP.c \
-#	./fw/peripherals/comm.c \
+	./MSP_EXP432P401RLP.c \
+	./fw/main.c
