@@ -7,7 +7,7 @@ PROJNAME = octanis1
 BUILD_DIR = build
 
 # dont show compiler calls, comment out for verbose build
-# Q = @
+Q = @
 
 # source file list
 include source.mk
@@ -43,8 +43,7 @@ DEFS += -D__MSP432P401R__ -DTARGET_IS_FALCON -Dgcc -DMSP432WARE -Dtimegm=mktime 
 	-Dxdc_target_name__=M4F \
 	-Dxdc_cfg__xheader__="\"configPkg/package/cfg/app_pm4fg.h\""
 
-LDSCRIPTS = MSP_EXP432P401RLP.lds Debug/configPkg/linker.cmd
-LLDSCRIPTS = $(addprefix  -T, $(LDSCRIPTS))
+LDSCRIPT = MSP_EXP432P401RLP.lds
 
 # libraries
 LIBDIR = -L$(TIRTOS_PATH)/products/MSPWare_2_00_00_40c/driverlib/MSP432P4xx/gcc
@@ -67,8 +66,10 @@ CPPFLAGS = $(OPT) $(CFLAGS) -fno-rtti -fno-exceptions -fno-unwind-tables -fno-us
 # Assembler flags
 ASFLAGS = $(OPT) $(DEFS)
 # Linker flags
-LDFLAGS += $(OPT) $(LLDSCRIPTS) -nostartfiles -Wl,-Map=$(PROJNAME).map
+LDFLAGS += $(OPT) -nostartfiles -Wl,-Map=$(PROJNAME).map
+LDFLAGS += -Wl,--script=$(LDSCRIPT),--script=Debug/configPkg/linker.cmd
 LDFLAGS += -Wl,--gc-sections -static
+
 # objcopy flags
 CPFLAGS = -Obinary -j .text -j .rodata -j .data
 
@@ -124,9 +125,9 @@ $(PROJNAME).list: $(PROJNAME).elf
 	$(Q) $(OD) -d ${<} > ${@}
 
 # linked elf-object
-$(PROJNAME).elf: $(OBJS) $(LDSCRIPTS)
+$(PROJNAME).elf: $(OBJS) $(LDSCRIPT)
 	$(PRINT) "> linking"
-	$(Q) $(LD) $(LDFLAGS) $(OBJS) $(LIBDIR) $(LIBS) -o ${@}
+	$(Q) $(LD) $(OBJS) $(LDFLAGS) $(LIBDIR) $(LIBS) -o ${@}
 
 # object from C
 $(COBJS): %.o : %.c Makefile
