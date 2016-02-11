@@ -166,19 +166,27 @@ bool as5050_read_data(uint16_t* angle) {
 
     if (((rx_dat >> 1) & 0x1) || ((agcreg >> 1) & 0x1))
     {
+		as5050_exchange(SPI_CMD_READ | (REG_ERROR<<1));
+		uint16_t err = as5050_exchange(SPI_CMD_NOP);
+		cli_printf("err reg %x\n", err);
 		/* error flag set - need to reset it */
 		as5050_exchange(SPI_CMD_READ | SPI_REG_CLRERR);
-		cli_printf("error flag\n");
+		// cli_printf("error flag\n");
 		return false;
     }
     else
     {
 		agc = (agcreg >> 2) & 0x3f; 		// AGC value (0..63)
 		value = (rx_dat >> 2) & 0x3ff;		// Angle value (0..4095 for AS5055)
-		(*angle) = ((uint32_t)value * 360) / 0x3ff; 	// Angle value in degree (0..359.9°)
+		*angle = ((uint32_t)value * 360) / 0x3ff; 	// Angle value in degree (0..359.9°)
 		alarmLo = (rx_dat >> 15) & 0x1;
 		alarmHi = (rx_dat >> 14) & 0x1;
-		if (alarmLo) {
+		if (alarmLo && alarmHi) {
+			as5050_exchange(SPI_CMD_READ | (REG_ERROR<<1));
+			uint16_t err = as5050_exchange(SPI_CMD_NOP);
+			as5050_exchange(SPI_CMD_READ | SPI_REG_CLRERR);
+			cli_printf("sys err %x %x\n", rx_dat, err>>2);
+		} else if (alarmLo) {
 			cli_printf("signal too low, %u\n", value);
 		} else if (alarmHi) {
 			cli_printf("signal too high, %u\n", value);
