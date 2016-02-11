@@ -187,9 +187,11 @@ void motors_struts_get_position()
 	degrees = motor_sensor_values[0] / (N_ADC_AVG_STRUT*11.378);
 
 	uint16_t angle = 0;
-	as5050_read_data(angle);
+	if (!as5050_read_data(angle)) {
+        cli_printf("error, ");
+    }
 
-	cli_printf("%u\n",degrees);
+	cli_printf("%u\n",angle);
 
 }
 
